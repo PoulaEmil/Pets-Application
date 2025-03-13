@@ -1,50 +1,73 @@
+import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:pets_application/screens/blabla.dart';
+import 'package:pets_application/screens/favourites.dart';
+import 'package:pets_application/screens/profile.dart';
+import 'package:pets_application/screens/settings.dart';
 
 import '../constants.dart';
-import '../widgets/square_card.dart';
-import '../widgets/wide_card.dart';
+
 
 // ignore: camel_case_types
-class home_Page extends StatelessWidget {
+class home_Page extends StatefulWidget {
   const home_Page({super.key});
+
+  @override
+  State<home_Page> createState() => _home_PageState();
+}
+
+class _home_PageState extends State<home_Page> {
+  int _bottomNavIndex = 0;
+  List<Widget> pages = const [
+    HomeHome(),
+    FavouritePage(),
+    ProfilePage(),
+    SettingsPage(),
+  ];
+  List<IconData> iconText = [
+    Icons.home,
+    Icons.favorite,
+    Icons.person,
+    Icons.settings
+  ];
+
+  List<String> titleList = ['home', 'favourite', 'profile', 'settings'];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: secondaryColor.withOpacity(.7),
+      backgroundColor: secondaryColor.withValues(alpha: .7),
       appBar: AppBar(
-        leading: Image.network(
-          "https://cdn-icons-png.flaticon.com/512/5930/5930063.png",
-        ),
-        backgroundColor: secondaryColor,
-        title: const Text("Welcome to PetZinia"),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.person_outline_sharp),
-          ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Icon(Icons.settings),
-          )
-        ],
-      ),
-      body: const Padding(
-        padding: EdgeInsets.all(12),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SingleChildScrollView(
-              child: Pcard(
-                name: "Dog",
-              ),
+            Text(
+              titleList[_bottomNavIndex],
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                  fontSize: 24),
             ),
-            SizedBox(
-              height: 25,
-            ),
-            WideCard(name: "DOG"),
+            const Icon(
+              Icons.notifications,
+              color: Colors.black,
+              size: 30,
+            )
           ],
         ),
+      ),
+      bottomNavigationBar: AnimatedBottomNavigationBar(
+          icons: iconText,
+          activeIndex: _bottomNavIndex,
+          gapLocation: GapLocation.center,
+          onTap: (index) {
+            setState(() {
+              _bottomNavIndex = index;
+            });
+          }),
+      body: IndexedStack(
+        index: _bottomNavIndex,
+        children: pages,
       ),
     );
   }
